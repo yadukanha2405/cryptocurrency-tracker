@@ -1,6 +1,7 @@
-import { Container, createTheme, LinearProgress, Table, TableCell, TableContainer, TableHead, TableRow, TextField, ThemeProvider, Typography } from '@material-ui/core';
+import { Container, createTheme, LinearProgress, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, ThemeProvider, Typography } from '@material-ui/core';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { CoinList } from '../config/api';
 import { CryptoState } from '../CryptoContext';
 
@@ -9,6 +10,7 @@ function CoinsTable() {
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState();
+  const navigate = useNavigate();
   const {currency} = CryptoState();
 
   const fetchCoins = async () => {
@@ -27,6 +29,20 @@ function CoinsTable() {
       type: "dark",
     },
   });
+
+  const handleSearch=()=>{
+    return coins.filter(
+      (coin) => 
+      coin.name.toLowerCase().includes(search) || coin.symbol.toLowerCase().includes(search)
+    )
+  }
+
+  const useStyles = makeStyles(()=>({
+
+  }));
+
+  const classes = useState();
+
   return (
     <ThemeProvider theme={darkTheme} >
       <Container style={{textAligh: "center"}}>
@@ -43,7 +59,7 @@ function CoinsTable() {
         />
         <TableContainer>
           {
-            loading?(
+            loading ? (
               <LinearProgress style={{backgroundColor: "gold"}}/>
             )  : (
               <Table>
@@ -52,18 +68,45 @@ function CoinsTable() {
                     {["Coin", "Price", "24h Change", "Market Cap"].map((head)=>(
                       <TableCell
                       style={{
-                        color: "black",
+                        color: "black",   
                         fontWeight : "700",
                         fontFamily: "Montserrat",
                       }}
                       key={head}
-                      aligh={head=== "coin" ? "" : "right"}
+                      aligh={head === "coin" ? "" : "right"}
                       >
-
+                        {head}
                       </TableCell>
                     ))}
                   </TableRow>
                 </TableHead>
+                <TableBody>
+                      {handleSearch().map((row)=>{
+                        const profit = row.price_change_percentage_24h > 0;
+                        return(
+                          <TableRow
+                          onClick={()=> navigate(`/coins/${row.id}`)}
+                          className={classes.row}
+                          key={row.name}
+                          >
+                            <TableCell
+                            component="th"
+                            scope='row'
+                            styles ={{
+                              display: "flex",
+                              gap: 15,
+                            }}
+                            >
+                              <img src={row?.image} 
+                              alt={row.name}
+                              height="50"
+                              style={{marginBottom: 10}}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                </TableBody>
               </Table>
             )
           }
