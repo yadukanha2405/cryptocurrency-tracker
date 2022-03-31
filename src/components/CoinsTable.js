@@ -80,33 +80,7 @@ function CoinsTable() {
                     ))}
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                      {handleSearch().map((row)=>{
-                        const profit = row.price_change_percentage_24h > 0;
-                        return(
-                          <TableRow
-                          onClick={()=> navigate(`/coins/${row.id}`)}
-                          className={classes.row}
-                          key={row.name}
-                          >
-                            <TableCell
-                            component="th"
-                            scope='row'
-                            styles ={{
-                              display: "flex",
-                              gap: 15,
-                            }}
-                            >
-                              <img src={row?.image} 
-                              alt={row.name}
-                              height="50"
-                              style={{marginBottom: 10}}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        )
-                      })}
-                </TableBody>
+                
               </Table>
             )
           }
